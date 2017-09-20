@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>socket.io - chart.js example</title>
+</head>
+<body>
+  <h1>Temperature</h1>
+  <canvas id="chart" width="400" height="150"></canvas>
+  <script type="text/javascript "src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script type="text/javascript">
+    var socket = io.connect()
+    var ctx = document.getElementById('chart').getContext('2d')
+    var data = {
+      labels: [0],
+      datasets: [{
+        data: [0],
+        label: 'Temperature',
+        backgroundColor: '#ff6600'
+      }]
+    }
+    var optionsAnimations = { animation: false }
+    var chart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: optionsAnimations
+    })
+
+    socket.on('temperature', function (value) {
+      var oldData = data.datasets[0].data
+      var oldLabels = data.labels
+
+      var length = oldData.length || labels.length
+      if (length >= 20) {
+        oldData.shift()
+        oldLabels.shift()
+      }
+
+      oldLabels.push(moment().format('HH:mm:ss'))
+      oldData.push(value)
+
+      chart.update()
+    })
+
+  </script>
+</body>
+</html>
