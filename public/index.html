@@ -31,17 +31,14 @@
     })
 
     socket.on('temperature', function (value) {
-      var oldData = data.datasets[0].data
-      var oldLabels = data.labels
-
-      var length = oldData.length || labels.length
+      var length = data.labels.length
       if (length >= 20) {
-        oldData.shift()
-        oldLabels.shift()
+        data.datasets[0].data.shift()
+        data.labels.shift()
       }
 
-      oldLabels.push(moment().format('HH:mm:ss'))
-      oldData.push(value)
+      data.labels.push(moment().format('HH:mm:ss'))
+      data.datasets[0].data.push(value)
 
       chart.update()
     })
